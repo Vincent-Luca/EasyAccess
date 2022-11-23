@@ -83,6 +83,12 @@ namespace HotelBuchen
             return temp;
         }
 
+        public void executequerey(string sql)
+        {
+            _command.CommandText = sql;
+            _command.ExecuteNonQuery();
+        }
+
 
         public void CloseDatabase()
         {
