@@ -30,9 +30,9 @@ namespace HotelBuchen
             }
         }
 
-        public datatype1 getColumnNames(string table)
+        public dataset getColumnNames(string table)
         {
-            datatype1 data = new datatype1();
+            dataset data = new dataset();
             _command.CommandText = "Select * from " + table + ";";
             reader = _command.ExecuteReader();
 
@@ -43,15 +43,15 @@ namespace HotelBuchen
 
                 templist.Add(reader.GetName(i));
                 templist.Add(reader.GetFieldType(i).ToString());
-                data.Content.Add(templist);
+                data.add(templist);
             }
             reader.Close();
             return data;
         }
 
-        public datatype1 getItem(string SQLQuery)
+        public dataset getItem(string SQLQuery)
         {
-            datatype1 data = new datatype1();
+            dataset data = new dataset();
 
             _command.CommandText = SQLQuery;
             reader = _command.ExecuteReader();
@@ -64,7 +64,7 @@ namespace HotelBuchen
                 {
                     templist.Add(reader.GetValue(i).ToString());
                 }
-                data.Content.Add(templist);
+                data.add(templist);
                 j++;
             }
 
