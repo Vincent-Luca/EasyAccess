@@ -1,20 +1,13 @@
 ﻿using System;
+using EasyAccess.Datatypes;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.OleDb;
 using System.IO;
-using System.Linq;
-using System.Net.Security;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HotelBuchen
 {
-    public class EasyAccess
+    partial class EasyAccess
     {
-        private readonly string workingDirectory;
-        private readonly string dir;
         private readonly OleDbConnection _con;
         private readonly OleDbCommand _command;
         private OleDbDataReader reader;
@@ -27,7 +20,7 @@ namespace HotelBuchen
 
             if (!Directory.Exists(databasePath))
             {
-
+                Console.WriteLine("Path does not Exist");
             }
             else
             {
@@ -37,50 +30,46 @@ namespace HotelBuchen
             }
         }
 
-        public string[,] getColumnNames(string table)
+        public datatype1 getColumnNames(string table)
         {
-
+            datatype1 data = new datatype1();
             _command.CommandText = "Select * from " + table + ";";
             reader = _command.ExecuteReader();
-            string[,] temp = new string[2, reader.FieldCount];
+
+
             for (int i = 0; i < reader.FieldCount; i++)
             {
-                temp[0, i] = reader.GetName(i);
-                temp[1, i] = reader.GetFieldType(i).ToString();
+                List<string> templist = new List<string>();
+
+                templist.Add(reader.GetName(i));
+                templist.Add(reader.GetFieldType(i).ToString());
+                data.Content.Add(templist);
             }
             reader.Close();
-            return temp;
+            return data;
         }
 
-        public string[,] getItem(string SQLAbfrage, string table)
+        public datatype1 getItem(string SQLQuery)
         {
-            _command.CommandText = "Select COUNT(*) from " + table + ";";
-            int rowcount = 0;
+            datatype1 data = new datatype1();
+
+            _command.CommandText = SQLQuery;
             reader = _command.ExecuteReader();
-            while (reader.Read())
-            {
-                rowcount = Convert.ToInt32(reader.GetValue(0));
-            }
-            reader.Close();
-
-
-
-            _command.CommandText = SQLAbfrage;
-            reader = _command.ExecuteReader();
-            string[,] temp = new string[rowcount, reader.FieldCount];
-
             int j = 0;
             while (reader.Read())
             {
-                for (int i = 0; i < temp.GetLength(1); i++)
+                List<string> templist = new List<string>();
+                templist.Add(reader.GetName(j));
+                for (int i = 0; i < reader.FieldCount; i++)
                 {
-                    temp[j, i] = reader.GetValue(i).ToString();
+                    templist.Add(reader.GetValue(i).ToString());
                 }
+                data.Content.Add(templist);
                 j++;
             }
 
             reader.Close();
-            return temp;
+            return data;
         }
 
         public void executequerey(string sql)
